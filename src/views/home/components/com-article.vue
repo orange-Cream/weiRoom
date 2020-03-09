@@ -1,20 +1,18 @@
 <template>
   <div class="scroll-wrapper">
-    <!-- 瀑布流加载效果(动作-上拉)
-            v-model="loading" 加载动画效果(加载中...)
-            :finished="finished" 是否停止加载，false可以继续加载,true停止加载
-            finished-text="没有更多了" 停止加载后的文字提示
-            @load="onLoad" 加载数据的回调事件，页面初次载入会自动触发
-                           或者是 滚轮 滚动到系统设置的页面底部，也会自动触发
-    -->
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <!--
-              单元格组件
-              内容独占一行进行显示，使用其他div也可以
-              title：设置单元格标题
-      -->
-      <van-cell v-for="item in list" :key="item" :title="item"/>
-    </van-list>
+    <!-- B.下拉刷新组件 -->
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <!-- 文章上拉列表 -->
+      <!-- A. 上拉刷新 -->
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <van-cell v-for="item in list" :key="item" :title="item" />
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -23,6 +21,7 @@ export default {
   name: 'com-article',
   data () {
     return {
+      isLoading: false, // 下拉刷新标志
       // 瀑布流相关成员
       list: [], // 接收加载好的数据
       loading: false, // “加载中...”动画是否显示(加载的时候才设置为true，加载完毕再设置为false)，每次onLoad执行就设置为true，执行完毕就设置为false
@@ -30,6 +29,14 @@ export default {
     }
   },
   methods: {
+    // 下拉刷新载入
+    onRefresh () {
+      setTimeout(() => {
+        this.onLoad() // 获取数据一次
+        this.isLoading = false // 暂停拉取
+        this.$toast('刷新成功')
+      }, 1000)
+    },
     // 瀑布流加载执行的方法
     onLoad () {
       // 异步更新数据
