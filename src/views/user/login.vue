@@ -2,27 +2,41 @@
   <div class="user-login">
     <van-nav-bar title="登录"></van-nav-bar>
     <van-cell-group>
-      <van-field
-        v-model="loginForm.mobile"
-        type="text"
-        required
-        label="手机号"
-        placeholder="请输入手机号"
-        clearable
-      />
-      <van-field
-        v-model="loginForm.code"
-        type="password"
-        required
-        clearable
-        label="验证码"
-        placeholder="请输入验证码"
+      <ValidationProvider
+        v-slot="{ errors }"
+        rules="required|phone"
+        name="手机号码"
       >
-        <van-button slot="button" size="small" type="primary">发送验证码</van-button>
-      </van-field>
+        <van-field
+          v-model="loginForm.mobile"
+          type="text"
+          required
+          label="手机号"
+          placeholder="请输入手机号"
+          clearable
+          :error-message="errors[0]"
+        />
+      </ValidationProvider>
+      <ValidationProvider name="验证码" rules="required" v-slot="{ errors }">
+        <van-field
+          v-model="loginForm.code"
+          type="password"
+          required
+          clearable
+          label="验证码"
+          placeholder="请输入验证码"
+          :error-message="errors[0]"
+        >
+          <van-button slot="button" size="small" type="primary"
+            >发送验证码</van-button
+          >
+        </van-field>
+      </ValidationProvider>
     </van-cell-group>
     <div class="login-btn">
-     <van-button round block type="info" size="small" @click="login()">登录</van-button>
+      <van-button round block type="info" size="small" @click="login()"
+        >登录</van-button
+      >
     </div>
   </div>
 </template>
@@ -30,6 +44,8 @@
 <script>
 // 导入api方法
 import { apiUserLogin } from '@/api/user.js'
+// 验证相关模块导入
+import { ValidationProvider } from 'vee-validate'
 export default {
   name: 'user-login',
   data () {
@@ -39,6 +55,10 @@ export default {
         code: '246810'
       }
     }
+  },
+  components: {
+    // 注册
+    ValidationProvider
   },
   methods: {
     // 登录系统
@@ -63,7 +83,7 @@ export default {
 </script>
 
 <style scoped lang="less">
- .login-btn{
-     margin: 40px;
- }
+.login-btn {
+  margin: 40px;
+}
 </style>

@@ -13,6 +13,9 @@ import 'amfe-flexible/index.min.js'
 // 引入全局css样式, 要覆盖vant的样式
 import '@/assets/css/global.less'
 
+// 验证独立文件
+import '@/utils/validate.js' // 验证相关
+
 Vue.use(Vant)
 Vue.config.productionTip = false
 
