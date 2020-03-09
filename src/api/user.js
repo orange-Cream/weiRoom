@@ -1,5 +1,5 @@
 // 导入axios 模块
-import instance from '@/utils/request.js'
+import request from '@/utils/request.js'
 
 // 创建各种api方法
 /**
@@ -18,7 +18,7 @@ import instance from '@/utils/request.js'
 export function apiUserLogin ({ mobile, code }) {
   // 请求axios,request就是axios的复制品, 操作结构完全一致
   // return 返回执行结果, 是promise对象
-  return requestAnimationFrame({
+  return request({
     url: '/app/v1_0/authorizations',
     method: 'post',
     data: {
