@@ -10,7 +10,7 @@
     <div class="my-wrapper">
       <router-view></router-view>
     </div>
-    <van-tabbar v-model="active">
+    <van-tabbar route active-color="#07c160" inactive-color="#000">
       <van-tabbar-item to="/home" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item to="/question" icon="search">问答</van-tabbar-item>
       <van-tabbar-item to="/video" icon="friends-o">视频</van-tabbar-item>
