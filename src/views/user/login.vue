@@ -36,7 +36,14 @@
       </ValidationObserver>
     </van-cell-group>
     <div class="login-btn">
-      <van-button round block type="info" size="small" @click="login()"
+      <van-button
+        round
+        block
+        type="info"
+        size="small"
+        @click="login()"
+        :loading="isLogin"
+        loading-text="登录中..."
         >登录</van-button
       >
     </div>
@@ -52,6 +59,7 @@ export default {
   name: 'user-login',
   data () {
     return {
+      isLogin: false, // 登录等待
       loginForm: {
         mobile: '13911111111',
         code: '246810'
@@ -72,6 +80,8 @@ export default {
         // 校验失败, 停止后续代码执行
         return false
       }
+      // 使得按钮变为加载中
+      this.isLogin = true
 
       // 调用api，校验账号信息有效，如下api请求有可能【成功】，还有可能【失败】
       try {
@@ -87,6 +97,8 @@ export default {
         this.$toast.fail('手机号或验证码错误' + err)
         // this.$toast.success('手机号或验证码错误' + err) // 成功提示
       }
+      // 使得按钮变为正常状态
+      this.isLogin = false
     }
   }
 }
