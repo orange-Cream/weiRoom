@@ -2,36 +2,38 @@
   <div class="user-login">
     <van-nav-bar title="登录"></van-nav-bar>
     <van-cell-group>
-      <ValidationProvider
-        v-slot="{ errors }"
-        rules="required|phone"
-        name="手机号码"
-      >
-        <van-field
-          v-model="loginForm.mobile"
-          type="text"
-          required
-          label="手机号"
-          placeholder="请输入手机号"
-          clearable
-          :error-message="errors[0]"
-        />
-      </ValidationProvider>
-      <ValidationProvider name="验证码" rules="required" v-slot="{ errors }">
-        <van-field
-          v-model="loginForm.code"
-          type="password"
-          required
-          clearable
-          label="验证码"
-          placeholder="请输入验证码"
-          :error-message="errors[0]"
+      <ValidationObserver ref="loginFormRef">
+        <ValidationProvider
+          v-slot="{ errors }"
+          rules="required|phone"
+          name="手机号码"
         >
-          <van-button slot="button" size="small" type="primary"
-            >发送验证码</van-button
+          <van-field
+            v-model="loginForm.mobile"
+            type="text"
+            required
+            label="手机号"
+            placeholder="请输入手机号"
+            clearable
+            :error-message="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider name="验证码" rules="required" v-slot="{ errors }">
+          <van-field
+            v-model="loginForm.code"
+            type="password"
+            required
+            clearable
+            label="验证码"
+            placeholder="请输入验证码"
+            :error-message="errors[0]"
           >
-        </van-field>
-      </ValidationProvider>
+            <van-button slot="button" size="small" type="primary"
+              >发送验证码</van-button
+            >
+          </van-field>
+        </ValidationProvider>
+      </ValidationObserver>
     </van-cell-group>
     <div class="login-btn">
       <van-button round block type="info" size="small" @click="login()"
@@ -45,7 +47,7 @@
 // 导入api方法
 import { apiUserLogin } from '@/api/user.js'
 // 验证相关模块导入
-import { ValidationProvider } from 'vee-validate'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 export default {
   name: 'user-login',
   data () {
@@ -58,11 +60,19 @@ export default {
   },
   components: {
     // 注册
-    ValidationProvider
+    ValidationProvider,
+    ValidationObserver
   },
   methods: {
     // 登录系统
     async login () {
+      // 对表单全部项目进行校验,没有问题再向下执行
+      const valid = await this.$refs.loginFormRef.validate()
+      if (!valid) {
+        // 校验失败, 停止后续代码执行
+        return false
+      }
+
       // 调用api，校验账号信息有效，如下api请求有可能【成功】，还有可能【失败】
       try {
         const result = await apiUserLogin(this.loginForm)
