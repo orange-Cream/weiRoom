@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 // localStorage存储用户信息的key名称, 统一设置, 方便后续使用
-const USER_KEY = 'ws-user'
+const USER_KEY = 'hm-toutiao-m-user'
 
 export default new Vuex.Store({
   state: {
