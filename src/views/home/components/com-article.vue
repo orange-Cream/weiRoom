@@ -64,10 +64,10 @@ export default {
       finished: false // 加载是否停止的标志，false可以继续加载，true瀑布流停止加载，如果后端没有数据可以提供了，就设置该项目为true即可
     }
   },
-  created () {
-    // 文章
-    this.getArticleList()
-  },
+  //   created () {
+  //     // 文章
+  //     this.getArticleList()
+  //   },
   methods: {
     // 获得文章列表
     async getArticleList () {
@@ -75,7 +75,7 @@ export default {
         channel_id: this.channelID,
         timestamp: this.ts
       })
-      console.log(result)
+      //   console.log(result)
       // data接收文章数据
       // this.articleList = result.results
       // 把获得好的文章列表做return返回
@@ -94,6 +94,10 @@ export default {
     },
     // 瀑布流加载执行的方法
     async onLoad () {
+      // 应用延迟器，使得执行速度减慢
+      // await设置上，作用就是当前的延迟器没有执行完毕，后续代码都等着
+      //              即 异步调用变为同步执行
+      await this.$sleep(2000) // 该延迟器要执行0.8秒
       // 1. 获得文章列表数据
       //    注意：设置await，使得当前的axios异步进程变为同步的，先执行完，再执行后续代码
       const articles = await this.getArticleList()
