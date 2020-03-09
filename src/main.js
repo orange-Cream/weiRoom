@@ -6,8 +6,11 @@ import store from './store'
 // 完整引入 vant 组件库
 import Vant from 'vant'
 import 'vant/lib/index.css'
-Vue.use(Vant)
 
+// 引入 lib-flexible 设置rem基准值
+import 'amfe-flexible/index.min.js'
+
+Vue.use(Vant)
 Vue.config.productionTip = false
 
 new Vue({
