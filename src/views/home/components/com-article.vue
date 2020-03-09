@@ -9,10 +9,7 @@
       success-duration="2000"
       animation-duration="3000"
     -->
-    <van-pull-refresh
-      v-model="isLoading"
-      @refresh="onRefresh"
-      >
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <!-- 瀑布流加载效果(动作-上拉)
               v-model="loading" 加载动画效果(加载中...)
               :finished="finished" 是否停止加载，false可以继续加载,true停止加载
@@ -20,7 +17,12 @@
               @load="onLoad" 加载数据的回调事件，页面初次载入会自动触发
                             或者是 滚轮 滚动到系统设置的页面底部，也会自动触发
       -->
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
         <!--
                 单元格组件
                 内容独占一行进行显示，使用其他div也可以
@@ -30,7 +32,8 @@
         <van-cell
           v-for="item in articleList"
           :key="item.art_id.toString()"
-          :title="item.title"/>
+          :title="item.title"
+        />
       </van-list>
     </van-pull-refresh>
   </div>
@@ -74,7 +77,10 @@ export default {
       })
       console.log(result)
       // data接收文章数据
-      this.articleList = result.results
+      // this.articleList = result.results
+      // 把获得好的文章列表做return返回
+      // 具体是给onLoad瀑布使用, 在瀑布里边实现push追加
+      return result
     },
     // 下拉刷新
     onRefresh () {
@@ -87,7 +93,25 @@ export default {
       }, 1000)
     },
     // 瀑布流加载执行的方法
-    onLoad () {
+    async onLoad () {
+      // 1. 获得文章列表数据
+      //    注意：设置await，使得当前的axios异步进程变为同步的，先执行完，再执行后续代码
+      const articles = await this.getArticleList()
+
+      if (articles.results.length > 0) {
+        // 2. 把获得到的文章数据push追加给articleList成员
+        //    articles.results: 文章的数组对象集 [{art_id,title,aut_id,pubdate},{……},{……}]
+        //    ...articles.results：扩展运算  {art_id,title,aut_id,pubdate},{……},{……}
+        this.articleList.push(...articles.results)
+        // 更新时间戳
+        this.ts = articles.pre_timestamp // 使得继续请求，可以获得下页数据
+      } else {
+        // 4. 数据已经耗尽，就要停止瀑布了
+        this.finished = true // 停止瀑布流加载
+      }
+
+      // 3. 清除上拉动画效果
+      this.loading = false // '加载中。。'动画清除
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
       // setTimeout设置延迟加载效果，有1s延迟
