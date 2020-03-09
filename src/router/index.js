@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 const routes = [{
   path: '/',
-  component: () => import('@/view/layout/index.vue'), // 布局组件 一级路由
+  component: () => import('@/views/layout/index.vue'), // 布局组件 一级路由
   redirect: '/home', // 重定向
   children: [
     {
