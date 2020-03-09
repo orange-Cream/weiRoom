@@ -33,7 +33,28 @@
           v-for="item in articleList"
           :key="item.art_id.toString()"
           :title="item.title"
-        />
+        >
+          <!--命名插槽：体现label的描述信息-->
+          <template slot="label">
+            <van-grid
+              :border="false"
+              v-if="item.cover.type > 0"
+              :column-num="item.cover.type"
+            >
+              <van-grid-item v-for="(item2, k2) in item.cover.images" :key="k2">
+                <van-image width="90" height="90" :src="item2" />
+              </van-grid-item>
+            </van-grid>
+            <p>
+              <span>作者:{{ item.aut_name }}</span>
+              &nbsp;
+              <span>评论 :{{ item.comm_count }}</span>
+              &nbsp;
+              <span>时间:{{ item.pubdate }}</span>
+              &nbsp;
+            </p>
+          </template>
+        </van-cell>
       </van-list>
     </van-pull-refresh>
   </div>
